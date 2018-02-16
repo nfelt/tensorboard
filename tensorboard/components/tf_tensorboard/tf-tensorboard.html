@@ -331,6 +331,12 @@ limitations under the License.
       throw new Error('HTML import plugin dashboards *before* tf-tensorboard');
     }
 
+    function _initSelectedDashboard(value) {
+      const storageVal = tf_storage.getString(tf_storage.TAB, /*useLocalStorage=*/false);
+      console.log('_initSelectedDashboard(' + value + ') with window.location.hash ' + window.location.hash + ' and storage result ' + storageVal);
+      return value;
+    }
+
     Polymer({
       is: "tf-tensorboard",
       behaviors: [tf_tensorboard.AutoReloadBehavior],
@@ -454,7 +460,7 @@ limitations under the License.
          */
         _selectedDashboard: {
           type: String,
-          value: tf_storage.getString(tf_storage.TAB, /*useLocalStorage=*/false) || null,
+          value: _initSelectedDashboard(tf_storage.getString(tf_storage.TAB, /*useLocalStorage=*/false) || null),
           observer: '_selectedDashboardChanged'
         },
 
@@ -577,8 +583,11 @@ limitations under the License.
        * selection to the hash and logging a pageview if analytics are enabled.
        */
       _selectedDashboardChanged(selectedDashboard) {
+        console.log('_selectedDashboardChanged(' + selectedDashboard + ')');
         const pluginString = selectedDashboard || '';
+        console.log('_selectedDashboardChanged(' + selectedDashboard + ') setting hash to ' + pluginString);
         tf_storage.setString(tf_storage.TAB, pluginString, /*useLocalStorage=*/false);
+        console.log('_selectedDashboardChanged(' + selectedDashboard + ') logging analytics hit for ' + pluginString);
         // Record this dashboard selection as a page view.
         ga('set', 'page', '/' + pluginString);
         ga('send', 'pageview');
@@ -589,14 +598,17 @@ limitations under the License.
        * set the selected dashboard to the first active one.
        */
       _updateSelectedDashboardFromActive(selectedDashboard, activeDashboards) {
+        console.log('_updateSelectedDashboardFromActive(' + selectedDashboard + ', ' + activeDashboards + ')');
         if (activeDashboards && selectedDashboard == null) {
           selectedDashboard = activeDashboards[0] || null;
           if (selectedDashboard != null) {
+            console.log('_updateSelectedDashboardFromActive(' + selectedDashboard + ', ' + activeDashboards + ') setting hash to ' + selectedDashboard);
             // Use location.replace for this call to avoid breaking back-button navigation.
             // Note that this will precede the update to tf_storage triggered by updating
             // _selectedDashboard and make it a no-op.
             tf_storage.setString(tf_storage.TAB, selectedDashboard, /*useLocalStorage=*/false,
                                  /*useLocationReplace=*/true);
+            console.log('_updateSelectedDashboardFromActive(' + selectedDashboard + ', ' + activeDashboards + ') setting _selectedDashboard to ' + selectedDashboard);
             // Note: the following line will re-trigger this handler, but it
             // will be a no-op since selectedDashboard is no longer null.
             this._selectedDashboard = selectedDashboard;
@@ -606,6 +618,7 @@ limitations under the License.
 
       _updateSelectedDashboardFromHash() {
         const dashboardName = tf_storage.getString(tf_storage.TAB, /*useLocalStorage=*/false);
+        console.log('_updateSelectedDashboardFromHash() setting _selectedDashboard to ' + dashboardName);
         this.set('_selectedDashboard', dashboardName || null);
       },
 
@@ -669,9 +682,12 @@ limitations under the License.
       },
 
       ready() {
+        console.log('ready()');
         tf_globals.setUseHash(this.useHash);
+        console.log('calling _updateSelectedDashboardFromHash() via ready()');
         this._updateSelectedDashboardFromHash();
         window.addEventListener('hashchange', () => {
+          console.log('calling _updateSelectedDashboardFromHash() via hashchange event');
           this._updateSelectedDashboardFromHash();
         }, /*useCapture=*/false);
 

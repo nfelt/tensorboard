@@ -100,6 +100,7 @@ function makeBindings<T>(fromString: (string) => T, toString: (T) => string): {
     const value = useLocalStorage ?
       window.localStorage.getItem(key) :
       componentToDict(readComponent())[key];
+    console.log('tf_storage.get(' + key + ') => ' + value);
     return value == undefined ? undefined : fromString(value);
   }
 
@@ -217,7 +218,9 @@ function getURIStorageName(
  * Read component from URI (e.g. returns "events&runPrefix=train*").
  */
 function readComponent(): string {
-  return tf_globals.useHash() ? window.location.hash.slice(1) : tf_globals.getFakeHash();
+  const retval = tf_globals.useHash() ? window.location.hash.slice(1) : tf_globals.getFakeHash();
+  console.log('tf_storage.readComponent() w/ useHash = ' + tf_globals.useHash() + ' => ' + retval);
+  return retval;
 }
 
 /**
