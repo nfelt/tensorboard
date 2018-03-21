@@ -33,13 +33,53 @@ limitations under the License.
         height: 100%;
       }
     </style>
+    <script>
+      console.log('Overriding requestManager');
+      let DATA = {
+        'data/environment': {'data_location': 'demo'},
+        'data/plugin/images/tags': {
+          'run': {
+            'tag': {
+              'description': '',
+              'displayName': 'tag',
+              'samples': '1',
+            },
+          },
+        },
+        'data/plugin/images/images?run=run&sample=0&tag=tag': [
+          {
+            'step': 0,
+            'wall_time': 1509496803.618287,
+            'width': 32,
+            'height': 32,
+            'query': 'notfound',
+          },
+        ],
+      };
+      function handleRequest(url) {
+        console.log('Stubbing response for ' + url);
+        let resp = DATA[url];
+        console.dir(resp);
+        return Promise.resolve(resp);
+      }
+      function FakeRequestManager() {
+        return {'request': handleRequest};
+      }
+      tf_backend.RequestManager = FakeRequestManager;
+      tf_backend.getRuns = () => ['run'];
+      colorScale = new tf_color_scale.ColorScale();
+      colorScale.domain(['run'])
+      tf_color_scale.runsColorScale = colorScale.scale.bind(colorScale);
+
+//      tf_color_scale.runsColorupdateRunsColorScale();
+    </script>
   </head>
   <body>
     <demo-snippet>
       <template>
         <dom-module id="image-dash-demo">
           <template>
-            <tf-image-dashboard id="demo" backend="[[backend]]">
+            <tf-image-dashboard id="demo">
             </tf-image-dashboard>
           </template>
           <script>
@@ -47,9 +87,9 @@ limitations under the License.
             Polymer({
               is: "image-dash-demo",
               created: function() {
-                var path = "data";
-                var router = tf_backend.createRouter(path, true);
-                tf_backend.setRouter(router);
+                tf_backend.requestManager = {
+                  'request': url => { console.log(url); },
+                };
               },
             });
           </script>
