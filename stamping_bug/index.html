@@ -1,0 +1,60 @@
+<!doctype html>
+<head>
+  <title>Stamping bug</title>
+  <script src="https://polygit.org/polymer+^1.9.1/webcomponentsjs+^0.7.0/components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import"  href="https://polygit.org/polymer+^1.9.1/webcomponentsjs+^0.7.0/components/polymer/polymer.html">
+</head>
+<body>
+
+<dom-module id="x-showhide">
+  <template>
+    <template is="dom-if" if="[[showData]]" restamp>
+      <slot></slot>
+    </template>
+  </template>
+  <script>Polymer({is: "x-showhide"});</script>
+</dom-module>
+
+<dom-module id="x-wrapper">
+  <template><slot></slot></template>
+  <script>Polymer({is: "x-wrapper"});</script>
+</dom-module>
+
+<dom-module id="x-example">
+  <template>
+    Text: <input value="{{boundText::input}}">
+    Has Data: <input type="checkbox" checked="{{hasData::change}}">
+    Show Data: <input type="checkbox" checked="{{showData::change}}">
+    <x-showhide show-data="{{showData}}">
+      <x-wrapper>
+        <template is="dom-repeat" items="[[_items(hasData)]]">
+          <div>Repeat</div>
+          <template is="dom-if" if="[[item]]">
+            <div>Bound text: [[boundText]]</div>
+          </template>
+        </template>
+      </x-wrapper>
+    </x-showhide>
+  </template>
+  <script>
+    Polymer({
+      is: 'x-example',
+      properties: {
+        hasData: {
+          type: Boolean,
+          value: true,
+        },
+        showData: {
+          type: Boolean,
+          value: true,
+        },
+      },
+      _items(hasData) {
+        return hasData ? [true] : [];
+      },
+    });
+  </script>
+</dom-module>
+
+<x-example></x-example>
+</body>
