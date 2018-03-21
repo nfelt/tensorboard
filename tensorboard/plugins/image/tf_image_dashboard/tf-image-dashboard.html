@@ -1,29 +1,44 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../tf-categorization-utils/tf-category-pane.html">
-<link rel="import" href="../tf-categorization-utils/tf-categorization-utils.html">
-<link rel="import" href="../tf-paginated-view/tf-paginated-view.html">
 
-<!--
-tf-image-dashboard displays a dashboard that loads images from a
-TensorFlow run.
--->
+<dom-module id="x-showhide">
+  <template>
+    Show Data: <input type="checkbox" checked="{{showData::change}}">
+    <template is="dom-if" if="[[showData]]" restamp>
+      <slot></slot>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: "x-showhide",
+      properties: {
+        showData: {
+          type: Boolean,
+          value: true,
+        },
+      },
+    });
+  </script>
+</dom-module>
+
+<dom-module id="x-wrapper">
+  <template><slot></slot></template>
+  <script>Polymer({is: "x-wrapper"});</script>
+</dom-module>
+
 <dom-module id="tf-image-dashboard">
   <template>
-    <input type="checkbox" checked="{{hostChecked::change}}">
-    <input value="{{hostValue::input}}">
-    <tf-category-pane category="[[category]]">
-      <tf-paginated-view
-        items="[[category.items]]"
-        pages="{{category._pages}}"
-      >
-        <template is="dom-repeat" items="[[category._pages]]">
-          <h1>page</h1>
+    Text: <input value="{{boundText::input}}">
+    Has Data: <input type="checkbox" checked="{{hasData::change}}">
+    <x-showhide>
+      <x-wrapper>
+        <template is="dom-repeat" items="[[_items(hasData)]]">
+          <div>Repeat</div>
           <template is="dom-if" if="[[item]]">
-            <h1>if-active [[hostValue]]</h1>
+            <div>Bound text: [[boundText]]</div>
           </template>
         </template>
-      </tf-paginated-view>
-    </tf-category-pane>
+      </x-wrapper>
+    </x-showhide>
   </template>
   <script>
     "use strict";
@@ -31,21 +46,17 @@ TensorFlow run.
     Polymer({
       is: 'tf-image-dashboard',
       properties: {
-        hostChecked: {
+        hasData: {
           type: Boolean,
           value: true,
         },
-        category: {
-          type: Object,
-          computed: '_makeCategory(hostChecked)',
+        showData: {
+          type: Boolean,
+          value: true,
         },
       },
-      _makeCategory(hostChecked) {
-        let items = [];
-        if (hostChecked > 0) {
-          items = ['foo'];
-        }
-        return {"name":"tag", "metadata":{"type":1}, "items": items};
+      _items(hasData) {
+        return hasData ? ['foo'] : [];
       },
     });
   </script>
