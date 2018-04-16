@@ -15,7 +15,8 @@ branches:
     - /^\d+\.\d+(\.\d+)?(-\S*)?$/
 
 env:
-  - BAZEL=0.9.0 TF=1.7.0rc0
+  - BAZEL=0.9.0 TF=1.7.0
+  - BAZEL=0.9.0 TF=1.8.0rc1
 
 cache:
   directories:
