@@ -8,7 +8,7 @@
 
 <dom-module id="x-showhide">
   <template>
-    <template is="dom-if" if="[[showData]]" restamp>
+    <template is="dom-if" if="[[showContents]]" restamp>
       <slot></slot>
     </template>
   </template>
@@ -23,12 +23,13 @@
 <dom-module id="x-example">
   <template>
     Text: <input value="{{boundText::input}}">
-    Has Data: <input type="checkbox" checked="{{hasData::change}}">
-    Show Data: <input type="checkbox" checked="{{showData::change}}">
-    <x-showhide show-data="{{showData}}">
+    Outer: <input type="checkbox" checked="{{showOuter::change}}">
+    Inner: <input type="checkbox" checked="{{showInner::change}}">
+    <x-showhide show-contents="[[showOuter]]">
       <x-wrapper>
-        <template is="dom-repeat" items="[[_items(hasData)]]">
+        <template is="dom-repeat" items="[[_items(showInner)]]">
           <div>Repeat</div>
+          <!-- restamp here makes no difference -->
           <template is="dom-if" if="[[item]]">
             <div>Bound text: [[boundText]]</div>
           </template>
@@ -40,17 +41,17 @@
     Polymer({
       is: 'x-example',
       properties: {
-        hasData: {
+        showInner: {
           type: Boolean,
           value: true,
         },
-        showData: {
+        showOuter: {
           type: Boolean,
           value: true,
         },
       },
-      _items(hasData) {
-        return hasData ? [true] : [];
+      _items(show) {
+        return show ? [true] : [];
       },
     });
   </script>
