@@ -90,7 +90,8 @@ limitations under the License.
                 pages="{{category._pages}}"
               >
                 <template is="dom-repeat" items="[[category._pages]]" as="page">
-                  <template is="dom-if" if="[[page.active]]">
+                  <!--                  <template is="dom-if" if="[[page.active]]"> -->
+                  <tf-category-pane-dom-if if="[[page.active]]">
                     <div class="layout horizontal wrap">
                       <template is="dom-repeat" items="[[page.items]]">
                         <tf-distribution-loader
@@ -102,7 +103,8 @@ limitations under the License.
                         ></tf-distribution-loader>
                       </template>
                     </div>
-                  </template>
+                    <!--                  </template> -->
+                  </tf-category-pane-dom-if>
                 </template>
               </tf-paginated-view>
             </tf-collapsable-pane>

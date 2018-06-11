@@ -44,8 +44,10 @@ limitations under the License.
       </button>
       <iron-collapse opened="[[opened]]">
         <div class="content">
-          <template is="dom-if" if="[[opened]]" restamp="[[restamp]]">
-            <slot></slot>
+          <template is="dom-if" if="[[opened]]" x-if="[[_hasBeenOpened]]" restamp="[[restamp]]">
+            <!-- Wrap the slot in a span as a workaround for this Polymer issue:
+                 https://github.com/Polymer/polymer/issues/5168 -->
+            <span><slot></slot></span>
           </template>
         </div>
       </iron-collapse>
@@ -132,6 +134,12 @@ limitations under the License.
           notify: true,
         },
 
+        /** Tracks whether opened has ever been set to true. */
+        _hasBeenOpenedState: {
+          type: Boolean,
+          value: false,
+        },
+
         /**
          * When the category is closed and reopened, should its contents
          * be restamped (default) or retained?
@@ -148,6 +156,10 @@ limitations under the License.
         _rendered: {
           type: Boolean,
           computed: '_computeRendered(category)',
+        },
+        _hasBeenOpened: {
+          type: Boolean,
+          computed: '_computeHasBeenOpened(opened)',
         },
         _isSearchResults: {
           type: Boolean,
@@ -169,6 +181,13 @@ limitations under the License.
 
       _togglePane() {
         this.set('opened', !this.opened);
+      },
+
+      _computeHasBeenOpened(opened) {
+        if (opened) {
+          this._hasBeenOpenedState = true;
+        }
+        return this._hasBeenOpenedState;
       },
 
       _computeRendered(category) {
@@ -196,4 +215,23 @@ limitations under the License.
       },
     });
   </script>
+</dom-module>
+
+
+<dom-module id="tf-category-pane-dom-if">
+  <template>
+    <template is="dom-if" if="[[if]]">
+      <div hidden$="[[!if]]"><slot></slot></div>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: "tf-category-pane-dom-if",
+      properties: {
+        if: {
+          type: Boolean,
+          value: false,
+        },
+      },
+    });</script>
 </dom-module>
