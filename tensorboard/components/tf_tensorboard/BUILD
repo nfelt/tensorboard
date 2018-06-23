@@ -57,6 +57,7 @@ tf_web_library(
         "//tensorboard/plugins/custom_scalar/tf_custom_scalar_dashboard",
         "//tensorboard/plugins/debugger/tf_debugger_dashboard",
         "//tensorboard/plugins/distribution/tf_distribution_dashboard",
+        "//tensorboard/plugins/experiment/tf_experiment_dashboard",
         "//tensorboard/plugins/graph/tf_graph_dashboard",
         "//tensorboard/plugins/histogram/tf_histogram_dashboard",
         "//tensorboard/plugins/image/tf_image_dashboard",

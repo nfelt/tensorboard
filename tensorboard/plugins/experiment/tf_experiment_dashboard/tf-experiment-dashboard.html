@@ -1,0 +1,149 @@
+<!--
+@license
+Copyright 2016 The TensorFlow Authors. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tf-backend/tf-backend.html">
+<link rel="import" href="../tf-categorization-utils/tf-categorization-utils.html">
+<link rel="import" href="../tf-categorization-utils/tf-category-pane.html">
+<link rel="import" href="../tf-categorization-utils/tf-tag-filterer.html">
+<link rel="import" href="../tf-dashboard-common/dashboard-style.html">
+<link rel="import" href="../tf-dashboard-common/tf-dashboard-layout.html">
+<link rel="import" href="../tf-dashboard-common/tf-option-selector.html">
+<link rel="import" href="../tf-imports/lodash.html">
+<link rel="import" href="../tf-paginated-view/tf-paginated-view.html">
+<link rel="import" href="../tf-runs-selector/tf-runs-selector.html">
+<link rel="import" href="../tf-storage/tf-storage.html">
+<link rel="import" href="../tf-tensorboard/registry.html">
+<link rel="import" href="../tf-utils/tf-utils.html">
+
+<!--
+  A frontend that displays a listing of experiments.
+-->
+<dom-module id="tf-experiment-dashboard">
+  <template>
+    <tf-dashboard-layout>
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <p>Sidebar 1</p>
+        </div>
+        <div class="sidebar-section">
+          <p>Sidebar 2</p>
+        </div>
+      </div>
+      <div class="center">
+        <template is="dom-if" if="[[_dataNotFound]]">
+          <div class="no-data-warning">
+            <h3>No experiment data was found.</h3>
+          </div>
+        </template>
+        <template is="dom-if" if="[[!_dataNotFound]]">
+          <!-- WORK IN PROGRESS see:
+               https://material.io/design/components/lists.html#
+               https://www.webcomponents.org/element/PolymerElements/iron-list
+               https://elements.polymer-project.org/bower_components/iron-list/demo/index.html
+               view-source:https://elements.polymer-project.org/bower_components/iron-list/demo/selection.html
+          -->
+          <iron-list items="[[_experiments]]" as="experiment"
+                     selection-enabled multi-selection selected-items="{{_selectedExperiments}}">
+            <template>
+              <div>
+                <div class="item" data-selected$="[[selected]]">
+                  <div class="name">[[experiment.name]] - [[selected]]</div>
+                </div>
+              </div>
+            </template>
+          </iron-list>
+        </template>
+      </div>
+    </tf-dashboard-layout>
+
+    <style include="dashboard-style"></style>
+    <style>
+      .no-data-warning {
+        max-width: 540px;
+        margin: 80px auto 0 auto;
+      }
+
+      .item {
+        border: 1px solid black;
+        height: 80px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'tf-experiment-dashboard',
+      properties: {
+        _dataNotFound: Boolean,
+        _experiments: Array,
+        _selectedExperiments: {
+          type: Array,
+          observer: '_selectedExperimentsChanged',
+        },
+        _requestManager: {
+          type: Object,
+          value: () => new tf_backend.RequestManager(50),
+        },
+      },
+      ready() {
+        console.log('Experiment dashboard ready');
+        this.reload();
+      },
+      reload() {
+        console.log('Experiment dashboard reload');
+        this._fetchExperiments();
+      },
+      _fetchExperiments() {
+        const url = tf_backend.getRouter().pluginRoute('experiments', '/experiments');
+        return this._requestManager.request(url).then(experiments => {
+          console.log('Experiment dashboard got experiments: ' + experiments);
+          if (experiments === undefined) {
+            return;
+          }
+          this.set('_dataNotFound', experiments.length === 0);
+          this.set('_experiments', experiments);
+        });
+      },
+      _selectedExperimentsChanged(newValue) {
+        console.log('Selected experiments: ' + this._selectedExperiments);
+      },
+      _computeClass(isSelected) {
+        let classes = 'item';
+        if (isSelected) {
+          classes += ' selected';
+        }
+        return classes;
+      },
+    });
+
+    tf_tensorboard.registerDashboard({
+      plugin: 'experiments',
+      elementName: 'tf-experiment-dashboard',
+    });
+
+  </script>
+</dom-module>

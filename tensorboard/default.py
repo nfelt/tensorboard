@@ -39,6 +39,7 @@ from tensorboard.plugins.beholder import beholder_plugin
 from tensorboard.plugins.core import core_plugin
 from tensorboard.plugins.custom_scalar import custom_scalars_plugin
 from tensorboard.plugins.distribution import distributions_plugin
+from tensorboard.plugins.experiment import experiments_plugin
 from tensorboard.plugins.graph import graphs_plugin
 from tensorboard.plugins.debugger import debugger_plugin_loader
 from tensorboard.plugins.histogram import histograms_plugin
@@ -53,19 +54,20 @@ logger = logging.getLogger(__name__)
 
 PLUGIN_LOADERS = [
     core_plugin.CorePluginLoader(),
-    base_plugin.BasicLoader(beholder_plugin.BeholderPlugin),
+    base_plugin.BasicLoader(experiments_plugin.ExperimentsPlugin),
     base_plugin.BasicLoader(scalars_plugin.ScalarsPlugin),
     base_plugin.BasicLoader(custom_scalars_plugin.CustomScalarsPlugin),
     base_plugin.BasicLoader(images_plugin.ImagesPlugin),
     base_plugin.BasicLoader(audio_plugin.AudioPlugin),
+    debugger_plugin_loader.DebuggerPluginLoader(),
     base_plugin.BasicLoader(graphs_plugin.GraphsPlugin),
     base_plugin.BasicLoader(distributions_plugin.DistributionsPlugin),
     base_plugin.BasicLoader(histograms_plugin.HistogramsPlugin),
-    base_plugin.BasicLoader(pr_curves_plugin.PrCurvesPlugin),
     base_plugin.BasicLoader(projector_plugin.ProjectorPlugin),
     base_plugin.BasicLoader(text_plugin.TextPlugin),
+    base_plugin.BasicLoader(pr_curves_plugin.PrCurvesPlugin),
     profile_plugin.ProfilePluginLoader(),
-    debugger_plugin_loader.DebuggerPluginLoader(),
+    base_plugin.BasicLoader(beholder_plugin.BeholderPlugin),
 ]
 
 
