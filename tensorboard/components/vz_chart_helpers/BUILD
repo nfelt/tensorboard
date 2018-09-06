@@ -8,7 +8,7 @@ tf_web_library(
     name = "vz_chart_helpers",
     srcs = [
         "vz-chart-helpers.html",
-        "vz-chart-helpers.ts",
+        "vz-chart-helpers.js",
     ],
     path = "/vz-chart-helpers",
     deps = [

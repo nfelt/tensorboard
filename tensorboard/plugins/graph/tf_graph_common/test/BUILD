@@ -11,12 +11,12 @@ tf_web_library(
     name = "test",
     srcs = [
         "index.html",
-        "graph-test.ts",
-        "hierarchy-test.ts",
-        "layout-test.ts",
-        "parser-test.ts",
-        "util-test.ts",
-        "util.ts",
+        "graph-test.js",
+        "hierarchy-test.js",
+        "layout-test.js",
+        "parser-test.js",
+        "util-test.js",
+        "util.js",
     ],
     path = "/tf-graph-common/test",
     deps = [

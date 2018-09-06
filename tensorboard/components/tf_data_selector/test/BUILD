@@ -11,7 +11,7 @@ tf_web_library(
     name = "test",
     srcs = [
         "tests.html",
-        "storage-utils-test.ts",
+        "storage-utils-test.js",
     ],
     path = "/tf_data_selector/test",
     deps = [

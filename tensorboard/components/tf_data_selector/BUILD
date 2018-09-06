@@ -8,14 +8,14 @@ tf_web_library(
     name = "tf_data_selector",
     srcs = [
         "experiment-selector.html",
-        "experiment-selector.ts",
-        "storage-utils.ts",
+        "experiment-selector.js",
+        "storage-utils.js",
         "tf-collapsible-data-selector.html",
-        "tf-collapsible-data-selector.ts",
+        "tf-collapsible-data-selector.js",
         "tf-data-select-row.html",
-        "tf-data-select-row.ts",
+        "tf-data-select-row.js",
         "tf-data-selector.html",
-        "tf-data-selector.ts",
+        "tf-data-selector.js",
     ],
     path = "/tf-data-selector",
     visibility = ["//visibility:public"],
@@ -40,7 +40,7 @@ tf_web_library(
 tf_web_library(
     name = "type",
     srcs = [
-        "type.ts",
+        "type.js",
     ],
     path = "/tf-data-selector",
     visibility = ["//visibility:public"],
