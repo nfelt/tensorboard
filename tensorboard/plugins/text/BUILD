@@ -58,15 +58,24 @@ py_binary(
 
 py_library(
     name = "summary",
-    srcs = ["summary.py"],
-    srcs_version = "PY2AND3",
     visibility = [
         "//visibility:public",
     ],
     deps = [
-        ":metadata",
+        ":summary_nodep",
         "//tensorboard:expect_tensorflow_installed",
-        "//tensorboard:util",
+    ],
+)
+
+py_library(
+    name = "summary_nodep",
+    srcs = ["summary.py"],
+    srcs_version = "PY2AND3",
+    visibility = [
+        "//tensorboard/summary:summary_nodep_group",
+    ],
+    deps = [
+        ":metadata",
     ],
 )
 

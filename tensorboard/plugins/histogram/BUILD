@@ -60,14 +60,25 @@ py_library(
 
 py_library(
     name = "summary",
-    srcs = ["summary.py"],
-    srcs_version = "PY2AND3",
     visibility = [
         "//visibility:public",
     ],
     deps = [
-        ":metadata",
+        ":summary_nodep",
         "//tensorboard:expect_tensorflow_installed",
+    ],
+)
+
+py_library(
+    name = "summary_nodep",
+    srcs = ["summary.py"],
+    srcs_version = "PY2AND3",
+    visibility = [
+        "//tensorboard/summary:summary_nodep_group",
+    ],
+    deps = [
+        ":metadata",
+        "//tensorboard:expect_numpy_installed",
     ],
 )
 

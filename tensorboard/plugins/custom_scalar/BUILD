@@ -38,12 +38,25 @@ py_library(
 
 py_library(
     name = "summary",
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        ":summary_nodep",
+        "//tensorboard:expect_tensorflow_installed",
+    ],
+)
+
+py_library(
+    name = "summary_nodep",
     srcs = ["summary.py"],
     srcs_version = "PY2AND3",
+    visibility = [
+        "//tensorboard/summary:summary_nodep_group",
+    ],
     deps = [
         ":metadata",
         ":protos_all_py_pb2",
-        "//tensorboard:expect_tensorflow_installed",
     ],
 )
 
